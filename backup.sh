@@ -34,7 +34,7 @@ read -p "Enter database user: " DATABASEUSER
 DB_USER="$DATABASEUSER"
 
 echo -n "Enter database password: "
-read -s DATABASEPASSWORD
+read DATABASEPASSWORD
 echo
 
 echo "Starting Backup..."
