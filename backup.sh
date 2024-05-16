@@ -9,7 +9,7 @@ TEMP_DIR="/var/web/$USERNAME/backup/Temp/"
 
 # Check if TEMP_DIR exists, if not, create it
 if [ ! -d "$TEMP_DIR" ]; then
-    mkdir -p "$BACKUP_DIR" && mkdir -p "$TEMP_DIR" && chmod u+w "$BACKUP_DIR" && chmod u+w "$TEMP_DIR" || { echo "Error: Unable to create backup directories; exit 1; }
+    mkdir -p "$BACKUP_DIR" && mkdir -p "$TEMP_DIR" && chmod u+w "$BACKUP_DIR" && chmod u+w "$TEMP_DIR" || { echo "Error: Unable to create backup directories"; exit 1; }
 fi
 
 # Website name
@@ -46,9 +46,9 @@ mysqldump -h "$DATABASEHOST" -u "$DB_USER" -p"$DATABASEPASSWORD" "$DB_NAME" --no
 tar -zcf "$TEMP_DIR/files.tar.gz" -C "$SITE_PATH" .
 
 # Create archive
-tar -zcf "/var/web/$USERNAME/backup/$BACKUP_NAME-$TODAY.tar.gz" -C "$TEMP_DIR" .
+tar -zcf "$BACKUP_DIR/$BACKUP_NAME-$TODAY.tar.gz" -C "$TEMP_DIR" .
 
 # Delete temporary files
 rm -Rf "$TEMP_DIR"
 
-echo "Backup Complete [$(du -sh /backup/$BACKUP_NAME-$TODAY.tar.gz | awk '{print $1}')]"
+echo "Backup Complete [$(du -sh "$BACKUP_DIR/$BACKUP_NAME-$TODAY.tar.gz" | awk '{print $1}')]"
