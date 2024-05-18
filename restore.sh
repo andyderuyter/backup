@@ -1,9 +1,17 @@
 #!/bin/bash
 
+# Edit these constants as needed
+# Default structure: /var/web/[username]/backup/TempRestore/ and /var/web/[username]/backup/public_html/
+BASE_DIR="/var/web"
+BACKUP_DIR_NAME="backup"
+TEMP_DIR_NAME="TempRestore"
+HTML_DIR_NAME="public_html"
+DEFAULT_DATABASEHOST="localhost"
+
 # Function to list backups and get user choice
 list_backups() {
     echo "Available backups:"
-    BACKUP_DIR="/var/web/$USERNAME/backup/"
+    BACKUP_DIR="$BASE_DIR/$USERNAME/$BACKUP_DIR_NAME/"
     BACKUPS=$(ls "$BACKUP_DIR"*.tar.gz)
 
     if [ -z "$BACKUPS" ]; then
@@ -28,14 +36,14 @@ list_backups() {
 
 # Function to empty public_html folder
 empty_public_html() {
-    SITE_PATH="/var/web/$USERNAME/public_html/"
+    SITE_PATH="$BASE_DIR/$USERNAME/$HTML_DIR_NAME/"
     if [ -d "$SITE_PATH" ]; then
         read -p "Do you want to empty the public_html folder before restoring? (yes/no): " EMPTY_CHOICE
         if [ "$EMPTY_CHOICE" == "yes" ]; then
             find "$SITE_PATH" -mindepth 1 -delete
-            echo "public_html folder emptied."
+            echo "$HTML_DIR_NAME folder emptied."
         else
-            echo "public_html folder not emptied."
+            echo "$HTML_DIR_NAME folder not emptied."
         fi
     else
         echo "Error: Directory $SITE_PATH does not exist"
@@ -68,13 +76,13 @@ import_sql_file() {
 
 # Function to restore backup
 restore_backup() {
-    TEMP_DIR="/var/web/$USERNAME/backup/TempRestore/"
+    TEMP_DIR="/$BASE_DIR/$USERNAME/$BACKUP_DIR_NAME/$TEMP_DIR_NAME/"
     mkdir -p "$TEMP_DIR"
     tar -xzf "$SELECTED_BACKUP" -C "$TEMP_DIR"
     drop_all_tables
 
     # Extract contents of public_html.tar.gz into public_html folder
-    tar -xzf "$TEMP_DIR/public_html.tar.gz" -C "$SITE_PATH"
+    tar -xzf "$TEMP_DIR/$HTML_DIR_NAME.tar.gz" -C "$SITE_PATH"
 
     # Find and import the .sql file
     SQL_FILE=$(find "$TEMP_DIR" -maxdepth 1 -type f -name "*.sql" | head -n 1)

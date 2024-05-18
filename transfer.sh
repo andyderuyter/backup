@@ -1,14 +1,16 @@
 #!/bin/bash
 
-# Define constants
+# Edit these constants as needed
+# Default structure: /var/web/[username]/backup/
 BASE_DIR="/var/web"
+BACKUP_DIR_NAME="backup"
 DESTINATION_HOST="6aa454105.l27powered.eu"
 
 # Prompt for the source username
 read -p "Enter your source username: " SOURCE_USERNAME
 
 # Construct the backup directory path
-BACKUP_DIR="$BASE_DIR/$SOURCE_USERNAME/backup"
+BACKUP_DIR="$BASE_DIR/$SOURCE_USERNAME/$BACKUP_DIR_NAME"
 
 # Check if the backup directory exists
 if [ ! -d "$BACKUP_DIR" ]; then
@@ -42,7 +44,7 @@ read -s -p "Enter the destination password: " DESTINATION_PASSWORD
 echo
 
 # Construct the destination path
-DESTINATION_PATH="$BASE_DIR/$DESTINATION_USERNAME/backup/"
+DESTINATION_PATH="$BASE_DIR/$DESTINATION_USERNAME/$BACKUP_DIR_NAME/"
 
 # Transfer the file using rsync with progress
 RSYNC_PASSWORD=$DESTINATION_PASSWORD rsync -av --progress "$FILE_NAME" "$DESTINATION_USERNAME@$DESTINATION_HOST:$DESTINATION_PATH"
