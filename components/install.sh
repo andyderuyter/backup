@@ -23,25 +23,12 @@ INSTALL_DIR="/var/web/$(whoami)/public_html/"
 # Change to the installation directory
 cd "$INSTALL_DIR"
 
-generate_random_string() {
-    local length=$1
-    local charset="A-Za-z0-9"
-    local str=""
-
-    for i in $(seq 1 $length); do
-        local index=$((RANDOM % ${#charset}))
-        str+="${charset:index:1}"
-    done
-
-    echo "$str"
+generate_prefix () {
+	pwgen -Bns 8 -1
 }
 
-generate_prefix() {
-    generate_random_string 8
-}
-
-generate_password() {
-    generate_random_string 18
+generate_password () {
+	pwgen -Bcns 18 -1
 }
 
 wp_db_prefix=$(generate_prefix)
