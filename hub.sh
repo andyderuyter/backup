@@ -3,10 +3,10 @@
 # Function to display the menu
 show_menu() {
     echo "Please select a task:"
-    echo "1) Backup"
-    echo "2) Restore"
-    echo "3) Transfer"
-    echo "4) Install WordPress"
+    echo "1) Install WordPress"
+    echo "2) Backup public_html and database"
+    echo "3) Restore a previous backup"
+    echo "4) Transfer a backup to another account"
     echo "5) Exit"
 }
 
