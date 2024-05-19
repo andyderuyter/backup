@@ -61,8 +61,8 @@ wp_cleanup_uninstall_plugins() {
 }
 
 wp_cleanup_uninstall_themes() {
-	echo "STATUS: Uninstall default WordPress themes (except for twentytwenty)"
-	wp theme delete twentynineteen --quiet && wp theme delete twentyseventeen --quiet
+	echo "STATUS: Uninstall default WordPress themes (except for twentytwentyfour)"
+	wp theme delete twentytwentytwo --quiet && wp theme delete twentytwentythree --quiet
 	echo "STATUS: Default WordPress themes are uninstalled"
 }
 
@@ -88,6 +88,7 @@ wp_install_plugins() {
 		echo "STATUS: Installing Elementor Free plugin"
 		wp plugin install elementor --activate --quiet
 		echo "STATUS: Elementor Free plugin is installed"
+        install_theme
 	fi
 
 	install_git_plugin "elementor-pro" "$wp_elementor_pro"
@@ -165,8 +166,6 @@ wp_cleanup_general() {
 		load_default_settings
 	fi
 
-	install_theme
-
 	wp core language update --quiet
 	wp language plugin update --all --quiet
 	wp language theme update --all --quiet
@@ -187,10 +186,13 @@ load_default_settings() {
 }
 
 install_theme() {
-	echo "STATUS: Install and activate Child Theme"
-	wp theme install https://github.com/zabulus-be/child-theme/archive/refs/heads/master.zip --activate --quiet
-	wp theme delete twentytwenty --quiet
-	echo "STATUS: Child Theme installed and activated"
+    echo "STATUS: Installing Hello Elementor theme"
+    wp theme install hello-elementor
+    echo "STATUS Hello Elementor theme installed"
+	echo "STATUS: Cloning and activating Hello Elementor child theme"
+	git clone https://github.com/elementor/hello-theme-child.git wp-content/themes/hello-theme-child
+	wp theme activate hello-theme-child --quiet
+	echo "STATUS: Hello Elementor child theme cloned and activated"
 }
 
 # Gather input from the user
