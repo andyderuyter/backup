@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Set executable permissions for the required scripts
+chmod +x /var/web/$(whoami)/zabit-shell-tools/components/install.sh
+chmod +x /var/web/$(whoami)/zabit-shell-tools/components/backup.sh
+chmod +x /var/web/$(whoami)/zabit-shell-tools/components/restore.sh
+chmod +x /var/web/$(whoami)/zabit-shell-tools/components/transfer.sh
+chmod +x /var/web/$(whoami)/zabit-shell-tools/update.sh
+
 # Function to display the menu
 show_menu() {
     echo "Please select a task:"
@@ -7,7 +14,8 @@ show_menu() {
     echo "2) Backup public_html and database"
     echo "3) Restore a previous backup"
     echo "4) Transfer a backup to another account"
-    echo "5) Exit"
+    echo "5) Update this script via git pull"
+    echo "6) Exit"
 }
 
 # Main loop to handle user input
@@ -18,7 +26,7 @@ while true; do
     case $choice in
         1)
             ./components/install.sh
-            echo "Installation task completed. Returning to the main menu..."
+            echo "WordPress installation completed. Returning to the main menu..."
             ;;
         2)
             ./components/backup.sh
@@ -33,6 +41,10 @@ while true; do
             echo "Transfer task completed. Returning to the main menu..."
             ;;
         5)
+            ./update.sh
+            echo "Update of zabit-shell-tools completed. Returning to the main menu..."
+            ;;
+        6)
             echo "Exiting..."
             exit 0
             ;;
