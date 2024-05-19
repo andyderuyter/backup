@@ -103,7 +103,9 @@ restore_backup() {
 read -p "Enter username: " USERNAME
 
 # Database credentials
-read -p "Enter database host: " DATABASEHOST
+read -p "Enter database host [Press enter for ${DEFAULT_DATABASEHOST}]: " DATABASEHOST
+DATABASEHOST=${DATABASEHOST:-$DEFAULT_DATABASEHOST}
+
 read -p "Enter database name: " DATABASENAME
 DB_NAME="$DATABASENAME"
 
