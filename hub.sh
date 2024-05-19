@@ -7,8 +7,35 @@ chmod +x /var/web/$(whoami)/zabit-shell-tools/components/restore.sh
 chmod +x /var/web/$(whoami)/zabit-shell-tools/components/transfer.sh
 chmod +x /var/web/$(whoami)/zabit-shell-tools/update.sh
 
+# Function to get the latest local commit hash
+get_latest_local_commit() {
+    local latest_commit=$(git -C /var/web/$(whoami)/zabit-shell-tools log -1 --pretty=format:"%h")
+    echo "$latest_commit"
+}
+
+# Function to get the latest online commit hash
+get_latest_online_commit() {
+    git -C /var/web/$(whoami)/zabit-shell-tools fetch origin main >/dev/null 2>&1
+    local latest_commit=$(git -C /var/web/$(whoami)/zabit-shell-tools log -1 origin/main --pretty=format:"%h")
+    echo "$latest_commit"
+}
+
+# Get the latest local and online commit hashes
+latest_local_commit=$(get_latest_local_commit)
+latest_online_commit=$(get_latest_online_commit)
+
+# Display the latest commits
+echo "Latest Local Commit: $latest_local_commit"
+echo "Latest Online Commit: $latest_online_commit"
+
+# Check if the latest local commit doesn't match the latest online commit
+if [[ "$latest_local_commit" != "$latest_online_commit" ]]; then
+    echo "- INFO: The latest local commit does not match the latest online commit. Please update your script."
+fi
+
 # Function to display the menu
 show_menu() {
+    echo " "
     echo "Please select a task:"
     echo "1) Install WordPress"
     echo "2) Backup public_html and database"
