@@ -76,6 +76,7 @@ wp_install_plugins() {
 		"sucuri-scanner"
 		"post-smtp"
 		"user-switching"
+        "autodescription"
 	)
 
 	echo "STATUS: Install new plugins"
@@ -85,22 +86,25 @@ wp_install_plugins() {
 	echo "STATUS: New plugins are installed"
 
 	if [[ "$wp_elementor" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-		echo "STATUS: Installing Elementor Free plugin"
+		echo "STATUS: Installing Elementor (Pro) and Powerpack Elements plugins"
 		wp plugin install elementor --activate --quiet
 		echo "STATUS: Elementor Free plugin is installed"
         install_theme
+        install_git_plugin "elementor-pro" "$wp_elementor"
+        install_git_plugin "powerpack-elements" "$wp_elementor"
+        echo "STATUS: Elementor (Pro) and Powerpack elements are installed"
 	fi
 
-	install_git_plugin "elementor-pro" "$wp_elementor_pro"
+	
 	install_git_plugin "advanced-custom-fields-pro" "$wp_acf_pro"
-	install_git_plugin "content-shapers-logo" "$wp_content_shapers_logo"
+	# install_git_plugin "content-shapers-logo" "$wp_content_shapers_logo"
 
-	if [[ "$wp_yoast" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-		echo "STATUS: Installing Yoast SEO & Hide SEO Bloat plugins"
-		wp plugin install wordpress-seo --activate --quiet
-		wp plugin install so-clean-up-wp-seo --activate --quiet
-		echo "STATUS: Yoast SEO & Hide SEO Bloat plugins are installed"
-	fi
+	# if [[ "$wp_yoast" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+	# 	echo "STATUS: Installing Yoast SEO & Hide SEO Bloat plugins"
+	# 	wp plugin install wordpress-seo --activate --quiet
+	# 	wp plugin install so-clean-up-wp-seo --activate --quiet
+	# 	echo "STATUS: Yoast SEO & Hide SEO Bloat plugins are installed"
+	# fi
 
 	if [[ "$wp_woo" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 		echo "STATUS: Start WooCommerce install"
@@ -188,7 +192,7 @@ load_default_settings() {
 install_theme() {
     echo "STATUS: Installing Hello Elementor theme"
     wp theme install hello-elementor
-    echo "STATUS Hello Elementor theme installed"
+    echo "STATUS: Hello Elementor theme installed"
 	echo "STATUS: Cloning and activating Hello Elementor child theme"
 	git clone https://github.com/elementor/hello-theme-child.git wp-content/themes/hello-theme-child
 	wp theme activate hello-theme-child --quiet
@@ -204,14 +208,13 @@ read -p "Enter WordPress Domain: " wp_domain
 read -p "Enter WordPress Title: " wp_title
 read -p "Enter WordPress Username: " wp_username
 read -p "Enter WordPress Email: " wp_email
-read -p "Enter WordPress Language (default: en_US): " wp_lang
-wp_lang=${wp_lang:-en_US}
+read -p "Enter WordPress Language (default: nl_NL): " wp_lang
+wp_lang=${wp_lang:-nl_NL}
 
 read -p "Do you want to install Elementor? (y/n) " wp_elementor
-read -p "Do you want to install Elementor Pro? (y/n) " wp_elementor_pro
 read -p "Do you want to install Advanced Custom Fields Pro? (y/n) " wp_acf_pro
-read -p "Do you want to install Content Shapers Logo plugin? (y/n) " wp_content_shapers_logo
-read -p "Do you want to install Yoast SEO? (y/n) " wp_yoast
+# read -p "Do you want to install Content Shapers Logo plugin? (y/n) " wp_content_shapers_logo
+# read -p "Do you want to install Yoast SEO? (y/n) " wp_yoast
 read -p "Do you want to install WooCommerce? (y/n) " wp_woo
 
 if [[ "$wp_woo" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -234,18 +237,18 @@ wp_install_plugins
 wp_cleanup_general
 
 # Display final message
-echo "=================================================================================="
+echo "=================================================="
 echo " Database and WordPress Installation Information"
-echo "=================================================================================="
+echo "=================================================="
 echo " Database Name: $db_name"
 echo " Database User: $db_user"
 echo " Database Password: $db_pass"
 echo " WordPress Table Prefix: ${wp_db_prefix}_"
-echo "=================================================================================="
+echo "=================================================="
 echo " Website Domain: $wp_domain"
 echo " Admin Username: $wp_username"
 echo " Admin Password: $wp_password"
 echo " Admin Email: $wp_email"
-echo "=================================================================================="
+echo "=================================================="
 echo " WP Install Script $version finished in $SECONDS seconds."
-echo "=================================================================================="
+echo "=================================================="
