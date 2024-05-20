@@ -54,9 +54,9 @@ empty_public_html() {
 # Function to drop all tables in the database
 drop_all_tables() {
     echo "Dropping all tables in the database..."
-    TABLES=$(mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" -e 'SHOW TABLES;' | awk '{ print $1 }' | grep -v '^Tables' )
+    TABLES=$(mysql --defaults-file="$MY_CNF" "$DB_NAME" -e 'SHOW TABLES;' | awk '{ print $1 }' | grep -v '^Tables' )
     for TABLE in $TABLES; do
-        mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" -e "DROP TABLE IF EXISTS $TABLE;"
+        mysql --defaults-file="$MY_CNF" "$DB_NAME" -e "DROP TABLE IF EXISTS $TABLE;"
     done
     echo "All tables dropped."
 }
@@ -75,7 +75,7 @@ restore_backup() {
     SQL_FILE=$(find "$TEMP_DIR" -maxdepth 1 -type f -name "*.sql" | head -n 1)
     if [ -n "$SQL_FILE" ]; then
         echo "Importing database from $SQL_FILE..."
-        mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" < "$SQL_FILE"
+        mysql --defaults-file="$MY_CNF" "$DB_NAME" < "$SQL_FILE"
         echo "Database import complete."
     else
         echo "Error: No SQL file found in $TEMP_DIR"
