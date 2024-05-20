@@ -2,7 +2,7 @@
 
 # Edit these constants as needed
 # Default structure: /var/web/[username]/backup/TempRestore/ and /var/web/[username]/backup/public_html/
-BASE_DIR="/var/web"
+BASE_DIR="$HOME"
 BACKUP_DIR_NAME="backup"
 TEMP_DIR_NAME="TempRestore"
 HTML_DIR_NAME="public_html"
@@ -11,8 +11,8 @@ MY_CNF="$HOME/.my.cnf"
 # Function to list backups and get user choice
 list_backups() {
     echo "Available backups:"
-    BACKUP_DIR="$HOME/$BACKUP_DIR_NAME/"
-    BACKUPS=$(ls "$BACKUP_DIR"*.tar.gz)
+    BACKUP_DIR="$BASE_DIR/$BACKUP_DIR_NAME/"
+    BACKUPS=$(ls "$BACKUP_DIR"*.tar.gz 2>/dev/null)
 
     if [ -z "$BACKUPS" ]; then
         echo "No backups found in $BACKUP_DIR"
@@ -36,7 +36,7 @@ list_backups() {
 
 # Function to empty public_html folder
 empty_public_html() {
-    SITE_PATH="$HOME/$HTML_DIR_NAME/"
+    SITE_PATH="$BASE_DIR/$HTML_DIR_NAME/"
     if [ -d "$SITE_PATH" ]; then
         read -p "Do you want to empty the public_html folder before restoring? (yes/no): " EMPTY_CHOICE
         if [ "$EMPTY_CHOICE" == "yes" ]; then
@@ -54,29 +54,16 @@ empty_public_html() {
 # Function to drop all tables in the database
 drop_all_tables() {
     echo "Dropping all tables in the database..."
-    TABLES=$(mysql --defaults-file="$MY_CNF" -e 'SHOW TABLES;' | awk '{ print $1 }' | grep -v '^Tables' )
+    TABLES=$(mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" -e 'SHOW TABLES;' | awk '{ print $1 }' | grep -v '^Tables' )
     for TABLE in $TABLES; do
-        mysql --defaults-file="$MY_CNF" -e "DROP TABLE IF EXISTS $TABLE;"
+        mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" -e "DROP TABLE IF EXISTS $TABLE;"
     done
     echo "All tables dropped."
 }
 
-# Function to import any SQL file into the database
-import_sql_file() {
-    SQL_FILE=$(find "$TEMP_DIR" -maxdepth 1 -type f -name "*.sql")
-    if [ -n "$SQL_FILE" ]; then
-        echo "Importing database from $SQL_FILE..."
-        mysql --defaults-file="$MY_CNF" < "$SQL_FILE"
-        echo "Database import complete."
-    else
-        echo "Error: No SQL file found in $TEMP_DIR"
-        exit 1
-    fi
-}
-
 # Function to restore backup
 restore_backup() {
-    TEMP_DIR="/$HOME/$BACKUP_DIR_NAME/$TEMP_DIR_NAME/"
+    TEMP_DIR="$BASE_DIR/$BACKUP_DIR_NAME/$TEMP_DIR_NAME/"
     mkdir -p "$TEMP_DIR"
     tar -xzf "$SELECTED_BACKUP" -C "$TEMP_DIR"
     drop_all_tables
@@ -88,7 +75,7 @@ restore_backup() {
     SQL_FILE=$(find "$TEMP_DIR" -maxdepth 1 -type f -name "*.sql" | head -n 1)
     if [ -n "$SQL_FILE" ]; then
         echo "Importing database from $SQL_FILE..."
-        mysql --defaults-file="$MY_CNF" < "$SQL_FILE"
+        mysql --defaults-file="$MY_CNF" --databases "$DB_NAME" < "$SQL_FILE"
         echo "Database import complete."
     else
         echo "Error: No SQL file found in $TEMP_DIR"
@@ -98,6 +85,8 @@ restore_backup() {
     rm -Rf "$TEMP_DIR"
     echo "Backup restored from $SELECTED_BACKUP"
 }
+
+read -p "Enter database name: " DB_NAME
 
 # List backups and get user choice
 list_backups
