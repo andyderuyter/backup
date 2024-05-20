@@ -1,12 +1,11 @@
 #!/bin/bash
 
-version="1.3.0"
+version="1.4.0"
 SECONDS=0
 
 set -e
 
-clear
-
+echo "                                                ";
 echo "           _     _ _     _                      ";
 echo "  ______ _| |__ (_) |_  | |__   ___             ";
 echo " |_  / _  | '_ \| | __| | '_ \ / _ \            ";
@@ -16,9 +15,8 @@ echo "                                                ";
 echo " WP Install Script $version                     ";
 echo "                                                ";
 
-# Define paths
-SCRIPT_DIR="/var/web/$(whoami)/zabit-shell-tools/"
-INSTALL_DIR="/var/web/$(whoami)/public_html/"
+# Define path
+INSTALL_DIR="$HOME/public_html"
 
 # Change to the installation directory
 cd "$INSTALL_DIR"

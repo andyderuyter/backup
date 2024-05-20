@@ -10,7 +10,7 @@ DESTINATION_HOST="6aa454105.l27powered.eu"
 read -p "Enter your source username: " SOURCE_USERNAME
 
 # Construct the backup directory path
-BACKUP_DIR="$BASE_DIR/$SOURCE_USERNAME/$BACKUP_DIR_NAME"
+BACKUP_DIR="$HOME/$BACKUP_DIR_NAME"
 
 # Check if the backup directory exists
 if [ ! -d "$BACKUP_DIR" ]; then
