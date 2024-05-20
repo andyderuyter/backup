@@ -40,7 +40,7 @@ fi
 echo "Starting backup of public_html and database..."
 
 # Database backup (mysql)
-mysqldump --defaults-file="$MY_CNF" --databases= "$DB_NAME" --no-tablespaces > "$TEMP_DIR/$BACKUP_NAME-$NOW.sql"
+mysqldump --defaults-file="$MY_CNF" --databases "$DB_NAME" --no-tablespaces > "$TEMP_DIR/$BACKUP_NAME-$NOW.sql"
 
 # Backup site files
 tar -zcf "$TEMP_DIR/$HTML_DIR_NAME.tar.gz" -C "$SITE_PATH" .
