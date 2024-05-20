@@ -53,7 +53,6 @@ initialize_my_cnf() {
     echo
     read -p "Enter MySQL host [default: localhost]: " db_host
     db_host=${db_host:-localhost}  # Set default value to localhost if empty
-    read -p "Enter default database name: " db_name
 
     # Create or update the .my.cnf file in the user's home directory
     cat > "$MY_CNF" <<EOF
@@ -61,7 +60,6 @@ initialize_my_cnf() {
 user=$db_user
 password=$db_pass
 host=$db_host
-database=$db_name
 EOF
 
     # Secure the .my.cnf file by setting proper permissions
